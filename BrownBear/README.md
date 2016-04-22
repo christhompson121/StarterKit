@@ -33,3 +33,4 @@ Steps to configure:
 7. From the [IAM Console](https://console.aws.amazon.com/iam/home?region=us-east-1#roles), click on your default lambda_basic_execution role you created during skill setup.
 8. Click "Attach Policy" and choose "AmazonSQSFullAccess".
 9. Review the Lambda source code.  **Uncomment** out the lines near the end of the function to enable SQS.  The "context.succeed" line will now be nested in an SQS callback block.
+10. Test your skill via the Developer Console or an Echo device.  You should see a new SQS message, with a custom URL in the body, for each interaction.
