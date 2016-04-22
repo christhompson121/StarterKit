@@ -1,17 +1,5 @@
 # StarterKit
 
 
-{
-    "intents": [
-        {
-            "intent": "MyIntent"
-        }
-
-    ]
-}
-
-
-
-MyIntent hello
-
+This is a very simple Hello World skill for Amazon Alexa.
 
