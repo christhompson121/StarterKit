@@ -1,0 +1,6 @@
+EndIntent I see a teacher
+EndIntent I see a teacher looking at me
+
+ISeeIntent I see a {Color} {Animal}
+ISeeIntent I see a {Color} {Animal} looking at me
+
