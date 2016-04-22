@@ -9,10 +9,9 @@ Based on the popular children's book [Brown Bear, Brown Bear, What Do You See?](
 this skill shows how to track multiple variables, save state to an array, and retrieve state.
 
 
-You may launch this skill
+You may launch this skill by saying "talk to brown bear", or you can jump right in with "tell brown bear I see a red bird".
 
-You can use the publish.sh script to automate deployment to your Lambda function.
-See details at:
-* [Publishing Your Skill Code to Lambda via the Command Line Interface](https://developer.amazon.com/public/community/post/Tx1UE9W1NQ0GYII/Publishing-Your-Skill-Code-to-Lambda-via-the-Command-Line-Interface)
+Continue describing what you see:  "I see a purple cat", "I see a green frog", etc.
 
+When you are done, just say "I see a teacher".  The skill will then recite the list of animals back to you.
 
