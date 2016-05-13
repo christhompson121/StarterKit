@@ -1,87 +1,14 @@
-// Brown Bear Alexa sample skill
-// see https://amzn.com/0805047905
+/**
+    Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
-// helper file ./AlexaSkill.js has been merged to the bottom of this file
-// https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/src/AlexaSkill.js
+    Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
 
-// var AWS = require('aws-sdk');
+        http://aws.amazon.com/apache2.0/
 
-exports.handler = function( event, context ) {
-    var say = "";
-    var endsession = false;
-    var sessionAttributes = {};
-    var myColor = "brown";
-    var myAnimal = "bear";
+    or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+*/
 
-    if (event.session.attributes) {
-        sessionAttributes = event.session.attributes;
-    }
-
-    if (event.request.type === "LaunchRequest") {
-        say = "Welcome!  Brown bear, brown bear, what do you see?";
-
-    } else {
-        var IntentName = event.request.intent.name;
-
-        if (IntentName === "ISeeIntent") {
-
-            if(event.request.intent.slots.Color.value && event.request.intent.slots.Animal.value) {
-
-               myColor  = event.request.intent.slots.Color.value;
-               myAnimal = event.request.intent.slots.Animal.value;
-
-               if (!sessionAttributes.myList)  {sessionAttributes.myList = []; }
-
-               sessionAttributes.myList.push(myColor + " " + myAnimal);
-
-               say = myColor + " " + myAnimal + ", " + myColor + " " + myAnimal +  ", what do you see? ";
-
-            } else {
-                say = "you can say things like, I see a red bird looking at me";
-            }
-
-        } else if (IntentName === "EndIntent") {
-            say = "We see a " + sessionAttributes.myList.toString() + " looking at us.  Thank you for playing!";
-            endsession = true;
-
-        }
-    }
-
-    var response = {
-        outputSpeech: {
-            type: "SSML",
-            ssml: "<speak>" + say + "</speak>"
-        },
-        shouldEndSession: endsession
-    };
-
-    // may uncomment to add AWS SQS sendMessage.  Be sure to adjust the QueueUrl with your own AWS Account Number.
-
-    // var sqs_params = {
-    //    QueueUrl: "https://sqs.us-east-1.amazonaws.com/333304289633/AlexaQueue",
-    //    MessageBody: "https://www.google.com/search?tbm=isch&q=" + myColor + "%20" + myAnimal  // Image Search URL
-    // }
-    //
-    // var sqs = new AWS.SQS({region : 'us-east-1'}).sendMessage(sqs_params);
-    //
-    // sqs.on('success', function() {
-
-            // this line terminates the Lambda function.
-            // It should be moved to within the deepest level of any nested asynchronous callbacks you add.
-            context.succeed( {sessionAttributes: sessionAttributes, response: response } );
-
-    // may uncomment to complete callback to SQS
-    // });
-    // sqs.send();
-
-
-
-};
-
-
-
-/////////////////////////////// ./AlexaSkill.js
-
+'use strict';
 
 function AlexaSkill(appId) {
     this._appId = appId;
@@ -220,8 +147,8 @@ Response.prototype = (function () {
             };
         }
         var returnResult = {
-            version: '1.0',
-            response: alexaResponse
+                version: '1.0',
+                response: alexaResponse
         };
         if (options.session && options.session.attributes) {
             returnResult.sessionAttributes = options.session.attributes;
@@ -267,4 +194,4 @@ Response.prototype = (function () {
     };
 })();
 
-// module.exports = AlexaSkill;
+module.exports = AlexaSkill;
