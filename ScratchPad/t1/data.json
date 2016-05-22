@@ -1,0 +1,23 @@
+
+{
+  "destination_addresses" : [ "San Francisco, CA, USA" ],
+  "origin_addresses" : [ "717 Best Ct, San Carlos, CA 94070, USA" ],
+  "rows" : [
+              {
+                "elements" : [
+                  {
+                    "distance" : {
+                      "text" : "29.4 mi",
+                      "value" : 47279
+                    },
+                    "duration" : {
+                      "text" : "36 mins",
+                      "value" : 2135
+                    },
+                    "status" : "OK"
+                  }
+                ]
+              }
+  ],
+  "status" : "OK"
+}
