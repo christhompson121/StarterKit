@@ -32,5 +32,14 @@ Steps to configure:
 6. Adjust your AWS Lambda execution role to add SQS permissions:
   * From the [IAM Console](https://console.aws.amazon.com/iam/home?region=us-east-1#roles), click on your default lambda_basic_execution role you created during skill setup.
   * Click "Attach Policy" and choose "AmazonSQSFullAccess".
-7. Review the Lambda source code.  **Uncomment** out the lines near the end of the function to enable SQS.  The "context.succeed" line will now be nested in an SQS callback block.
+7. Review the Lambda source code.  **Uncomment** out the function near the end called RespondSendSqsMessage to enable SQS.  Comment out the original Respond() function.
 8. Test your skill via the Developer Console or an Echo device.  You should see a new SQS message, with a custom URL in the body, for each interaction.
+
+
+#### IOT Thing Updates
+1. Login to the [IOT Console](https://console.aws.amazon.com/iot/home?region=us-east-1)
+2. Review [ASK/IOT blog post](https://developer.amazon.com/public/community/post/Tx3828JHC7O9GZ9/Using-Alexa-Skills-Kit-and-AWS-IoT-to-Voice-Control-Connected-Devices) to configure your IoT device
+3. Review the Lambda source code.  **Uncomment** out the function near the end called RespondUpdateIotShadow to enable IoT updates.  Comment out the original Respond() function.
+4. Test your skill via the Developer Console or an Echo device.  You should see a new IoT update, on your physical device or via the MQTT Client console.
+
+
