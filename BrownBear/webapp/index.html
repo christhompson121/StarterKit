@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SQS Long Polling Demo</title>
+
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.18.min.js"></script>
+
+    <script>
+
+        var cognitoIdentityPoolID =   "";
+        // Login to AWS Cognito, and create your own Federated Itentity Pool.
+        // It created two new IAM Roles.  Edit the Unauthenticated Pool role, and attach SQS read and delete permissions to it.
+
+        // A sample Pool ID is   "us-east-1:e19c31b7-b092-42b4-8d77-2b7939115700";
+
+        var creds = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: cognitoIdentityPoolID
+        });
+        AWS.config.credentials = creds;
+
+        // var AWS = require("aws-sdk");  // this is the unsafe way, by publicly sharing your secret key.  AVOID!
+        // AWS.config.update({accessKeyId: 'AKIAIMB42B3AXBQIPBNA', secretAccessKey: 'pPK/VjhH1PVQhW8mv0WxSHv9d/oiMnMIgWzzzzzz', });
+
+        AWS.config.region = 'us-east-1';
+
+        var qurl = "https://sqs.us-east-1.amazonaws.com/333304289684/AlexaQueue";  // replace with YOUR SQS queue (configured with 20 second polling)
+        var childWindow;
+
+
+        function WatchQ(qurl) {
+            var queue = new AWS.SQS({params: {QueueUrl: qurl.toString() }}); // using url to queue
+            console.log('Queue poll loop watching ' + qurl);
+
+            var mymsg = queue.receiveMessage({
+                WaitTimeSeconds: 20
+            }, function (err, data) {
+
+                if (data) {
+                    if (typeof data.Messages[0] != "undefined") {
+
+                        console.log("got queue message : " + data.Messages[0].Body);
+
+                        document.getElementById("msgbody").innerHTML = data.Messages[0].Body;
+
+                        pop(data.Messages[0].Body);
+
+
+                        var params = {
+                            QueueUrl: qurl.toString(), /* required */
+                            ReceiptHandle: data.Messages[0].ReceiptHandle /* required */
+                        };
+                        queue.deleteMessage(params, function (err, data) {
+                            if (err) console.log(err, err.stack); // an error occurred
+//                            else {
+//                                console.log("deleted message ");
+//                            }
+                        });
+
+
+                    }
+                } else {
+                    console.log("queue empty");
+                }
+
+                WatchQ(qurl);
+                // RECURSION!  Call self again for next poll!
+
+            });
+        }
+
+
+        function pop(url) {  // open and refresh a child browser window.
+            if (childWindow) {
+                childWindow.location = url;
+            } else {
+                //mconsole.log('----- Opening')
+
+                childWindow = window.open(
+                        url,
+                        'mychild',
+                        'height=500,width=700,titlebar=yes,toolbar=no,menubar=no,directories=no,status=no,location=yes,title=new'
+                );
+            }
+
+        }
+    </script>
+</head>
+<body onLoad="WatchQ(qurl);">
+<h2>Welcome Alexa Skill Developers!</h2>
+<p>How can AWS Lambda push notifications to apps and devices behind a firewall? The app first connects to the cloud and performs "Long Polling"!</p>
+<p>This is a single page webapp that loads the AWS SDK for Javascript.  It will automatically connect to AWS via Cognito Anonymous and watch a certain SQS Queue.</p>
+<p>It will repeat a 20-second poll, forever.  As soon as a Queue message appears, it will be picked up by this page immediately, processed, and deleted.</p>
+<p>Watch for this page to spawn a child window, that is updated upon every new SQS Message (Alexa Skills Event).</p>
+<p>Be sure to close this parent page when done.  Two browsers watching the same Queue will steal and delete each others' messages.</p>
+
+    Poll Results:
+<div style="background-color: gainsboro" id="msgbody">
+&nbsp;
+</div>
+<p>Follow me on Twitter!  <a href="https://twitter.com/robmccauley">@RobMcCauley</a></p>
+</body>
+</html>

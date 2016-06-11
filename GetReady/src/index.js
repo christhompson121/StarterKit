@@ -1,272 +1,158 @@
-// GetReady Alexa sample skill
-// Read schedule file from S3 object, report on progress
+// Brown Bear Alexa sample skill
+// see https://amzn.com/0805047905
 
 // var AWS = require('aws-sdk');
 
+var fs = require('fs');
 
-/**
- * App ID for the skill
- */
-var APP_ID = undefined; //replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
+exports.handler = function( event, context ) {
+    var say = "";
+    var endsession = false;
+    var sessionAttributes = {};
+    var myColor = "brown";
+    var myAnimal = "bear";
 
-/**
- * The AlexaSkill prototype and helper functions
- */
-// var AlexaSkill = require('./AlexaSkill'); // this is now inline at the end of this source file
-
-/**
- * HelloWorld is a child of AlexaSkill.
- * To read more about inheritance in JavaScript, see the link below.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
- */
-
-var HelloWorld = function () {
-    AlexaSkill.call(this, APP_ID);
-};
-
-// Extend AlexaSkill
-HelloWorld.prototype = Object.create(AlexaSkill.prototype);
-HelloWorld.prototype.constructor = HelloWorld;
-
-HelloWorld.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    // console.log("HelloWorld onSessionStarted requestId: " + sessionStartedRequest.requestId + ", sessionId: " + session.sessionId);
-    // any initialization logic goes here
-
-};
-
-HelloWorld.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    // console.log("HelloWorld onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Welcome to the Alexa Skills Kit, you can say hello";
-    var repromptText = "You can say hello";
-
-    response.ask(speechOutput, repromptText);
-};
-
-HelloWorld.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    // console.log("HelloWorld onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
-    // any cleanup logic goes here
-
-};
-
-HelloWorld.prototype.intentHandlers = {
-    // register custom intent handlers
-    "HelloWorldIntent": function (intent, session, response) {
-        response.tellWithCard("Hello World!", "Greeter", "Hello World!");
-    },
-    "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("You can say hello to me!", "You can say hello to me!");
+    if (event.session.attributes) {
+        sessionAttributes = event.session.attributes;
     }
-};
 
-// Create the handler that responds to the Alexa Request.
-exports.handler = function (event, context) {
-    // Create an instance of the HelloWorld skill.
-    var helloWorld = new HelloWorld();
-    helloWorld.execute(event, context);
-};
+    if (event.request.type === "LaunchRequest") {
+        say = "Welcome! Brown bear, brown bear, what do you see?";
 
-
-
-
-// ------------------------- AlexaSkills source file below.  Do not modify --------------------
-
-
-/**
- Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
- Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-
- http://aws.amazon.com/apache2.0/
-
- or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-*/
-
-'use strict';
-
-function AlexaSkill(appId) {
-    this._appId = appId;
-}
-
-AlexaSkill.speechOutputType = {
-    PLAIN_TEXT: 'PlainText',
-    SSML: 'SSML'
-}
-
-AlexaSkill.prototype.requestHandlers = {
-    LaunchRequest: function (event, context, response) {
-        this.eventHandlers.onLaunch.call(this, event.request, event.session, response);
-    },
-
-    IntentRequest: function (event, context, response) {
-        this.eventHandlers.onIntent.call(this, event.request, event.session, response);
-    },
-
-    SessionEndedRequest: function (event, context) {
-        this.eventHandlers.onSessionEnded(event.request, event.session);
-        context.succeed();
-    }
-};
-
-/**
- * Override any of the eventHandlers as needed
- */
-AlexaSkill.prototype.eventHandlers = {
-    /**
-     * Called when the session starts.
-     * Subclasses could have overriden this function to open any necessary resources.
-     */
-    onSessionStarted: function (sessionStartedRequest, session) {
-    },
-
-    /**
-     * Called when the user invokes the skill without specifying what they want.
-     * The subclass must override this function and provide feedback to the user.
-     */
-    onLaunch: function (launchRequest, session, response) {
-        throw "onLaunch should be overriden by subclass";
-    },
-
-    /**
-     * Called when the user specifies an intent.
-     */
-    onIntent: function (intentRequest, session, response) {
-        var intent = intentRequest.intent,
-            intentName = intentRequest.intent.name,
-            intentHandler = this.intentHandlers[intentName];
-        if (intentHandler) {
-            console.log('dispatch intent = ' + intentName);
-            intentHandler.call(this, intent, session, response);
-        } else {
-            throw 'Unsupported intent = ' + intentName;
-        }
-    },
-
-    /**
-     * Called when the user ends the session.
-     * Subclasses could have overriden this function to close any open resources.
-     */
-    onSessionEnded: function (sessionEndedRequest, session) {
-    }
-};
-
-/**
- * Subclasses should override the intentHandlers with the functions to handle specific intents.
- */
-AlexaSkill.prototype.intentHandlers = {};
-
-AlexaSkill.prototype.execute = function (event, context) {
-    try {
-        console.log("session applicationId: " + event.session.application.applicationId);
-
-        // Validate that this request originated from authorized source.
-        if (this._appId && event.session.application.applicationId !== this._appId) {
-            console.log("The applicationIds don't match : " + event.session.application.applicationId + " and "
-                + this._appId);
-            throw "Invalid applicationId";
-        }
-
-        if (!event.session.attributes) {
-            event.session.attributes = {};
-        }
-
-        if (event.session.new) {
-            this.eventHandlers.onSessionStarted(event.request, event.session);
-        }
-
-        // Route the request to the proper handler which may have been overriden.
-        var requestHandler = this.requestHandlers[event.request.type];
-        requestHandler.call(this, event, context, new Response(context, event.session));
-    } catch (e) {
-        console.log("Unexpected exception " + e);
-        context.fail(e);
-    }
-};
-
-var Response = function (context, session) {
-    this._context = context;
-    this._session = session;
-};
-
-function createSpeechObject(optionsParam) {
-    if (optionsParam && optionsParam.type === 'SSML') {
-        return {
-            type: optionsParam.type,
-            ssml: optionsParam.speech
-        };
     } else {
-        return {
-            type: optionsParam.type || 'PlainText',
-            text: optionsParam.speech || optionsParam
+        var IntentName = event.request.intent.name;
+
+        if (IntentName === "ISeeIntent") {
+
+            if(event.request.intent.slots.Color.value && event.request.intent.slots.Animal.value) {
+
+                myColor  = event.request.intent.slots.Color.value;
+                myAnimal = event.request.intent.slots.Animal.value;
+
+                if (!sessionAttributes.myList)  {sessionAttributes.myList = []; }
+
+                sessionAttributes.myList.push(myColor + " " + myAnimal);
+
+                say = myColor + " " + myAnimal + ", " + myColor + " " + myAnimal +  ", what do you see? ";
+
+            } else {
+                say = "you can say things like, I see a red bird looking at me";
+            }
+
+        } else if (IntentName === "EndIntent") {
+            say = "We see a " + sessionAttributes.myList.toString() + " looking at us.  Thank you for playing!";
+            endsession = true;
+
         }
     }
+
+    var response = {
+        outputSpeech: {
+            type: "SSML",
+            ssml: "<speak>" + say + "</speak>"
+        },
+        reprompt: {
+            outputSpeech: {
+                type: "SSML",
+                ssml: "<speak>Please try again. " + say + "</speak>"
+            }
+        },
+        card: {
+            type: "Simple",
+            title: "My Card Title",
+            content: "My Card Content, displayed on the Alexa Companion mobile App or alexa.amazon.com"
+        },
+
+        shouldEndSession: endsession
+    };
+
+
+
+    Respond(  // Respond with normal speech only
+        function() {context.succeed( {sessionAttributes: sessionAttributes, response: response } ); }
+    );
+
+
+    // --------- Uncomment for AWS SQS Integration -------------------------------------------------
+    //RespondSendSqsMessage(  // use this to send a new message to an SQS Queue
+    //    {
+    //        MessageBody:  "https://www.google.com/search?tbm=isch&q=" + myColor + "%20" + myAnimal  // Message Body (Image Search URL)
+    //    },
+    //     function() {context.succeed( {sessionAttributes: sessionAttributes, response: response } ); }
+    //);
+
+
+    // --------- Uncomment for AWS IOT Integration -------------------------------------------------
+    //RespondUpdateIotShadow(  // use this to update an IoT device state
+    //    {
+    //        IOT_THING_NAME: "MyDevice",
+    //        IOT_DESIRED_STATE: {"pump":1}  // or send spoken slot value detected
+    //    },
+    //    function() {context.succeed( {sessionAttributes: sessionAttributes, response: response } ); }
+    //);
+
+
+};
+
+// -----------------------------------------------------------------------------
+
+function Respond(callback) {
+    callback();
 }
 
-Response.prototype = (function () {
-    var buildSpeechletResponse = function (options) {
-        var alexaResponse = {
-            outputSpeech: createSpeechObject(options.output),
-            shouldEndSession: options.shouldEndSession
-        };
-        if (options.reprompt) {
-            alexaResponse.reprompt = {
-                outputSpeech: createSpeechObject(options.reprompt)
-            };
+function RespondSendSqsMessage(sqs_params, callback) {
+
+    sqs_params.QueueUrl = "https://sqs.us-east-1.amazonaws.com/333304289684/AlexaQueue";
+
+    var sqs = new AWS.SQS({region : 'us-east-1'});
+
+
+    sqs.sendMessage(sqs_params, function(err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else {
+            console.log("success calling sqs sendMessage");
+
+            callback();  // after performing SQS send, execute the caller's context.succeed function to complete
         }
-        if (options.cardTitle && options.cardContent) {
-            alexaResponse.card = {
-                type: "Simple",
-                title: options.cardTitle,
-                content: options.cardContent
-            };
+    });
+
+}
+
+
+function RespondUpdateIotShadow(iot_config, callback) {
+
+    iot_config.IOT_BROKER_ENDPOINT      = "https://A2ESHRCP6U0Y0C.iot.us-east-1.amazonaws.com".toLowerCase();
+    iot_config.IOT_BROKER_REGION       = "us-east-1";
+
+
+    var iotData = new AWS.IotData({endpoint: iot_config.IOT_BROKER_ENDPOINT});
+
+    //Set the pump to 1 for activation on the device
+    var payloadObj={ "state":
+        { "desired":
+        iot_config.IOT_DESIRED_STATE // {"pump":1}
         }
-        var returnResult = {
-            version: '1.0',
-            response: alexaResponse
-        };
-        if (options.session && options.session.attributes) {
-            returnResult.sessionAttributes = options.session.attributes;
-        }
-        return returnResult;
     };
 
-    return {
-        tell: function (speechOutput) {
-            this._context.succeed(buildSpeechletResponse({
-                session: this._session,
-                output: speechOutput,
-                shouldEndSession: true
-            }));
-        },
-        tellWithCard: function (speechOutput, cardTitle, cardContent) {
-            this._context.succeed(buildSpeechletResponse({
-                session: this._session,
-                output: speechOutput,
-                cardTitle: cardTitle,
-                cardContent: cardContent,
-                shouldEndSession: true
-            }));
-        },
-        ask: function (speechOutput, repromptSpeech) {
-            this._context.succeed(buildSpeechletResponse({
-                session: this._session,
-                output: speechOutput,
-                reprompt: repromptSpeech,
-                shouldEndSession: false
-            }));
-        },
-        askWithCard: function (speechOutput, repromptSpeech, cardTitle, cardContent) {
-            this._context.succeed(buildSpeechletResponse({
-                session: this._session,
-                output: speechOutput,
-                reprompt: repromptSpeech,
-                cardTitle: cardTitle,
-                cardContent: cardContent,
-                shouldEndSession: false
-            }));
-        }
+    //Prepare the parameters of the update call
+    var paramsUpdate = {
+        "thingName" : iot_config.IOT_THING_NAME,
+        "payload" : JSON.stringify(payloadObj)
     };
-})();
+    // see results in IoT console, MQTT client tab, subscribe to $aws/things/YourDevice/shadow/update/delta
 
-// module.exports = AlexaSkill;
+    //Update Device Shadow
+    iotData.updateThingShadow(paramsUpdate, function(err, data) {
+        if (err){
+            console.log(err.toString());
+        }
+        else {
+            console.log("success calling IoT updateThingShadow");
+            callback();  // after performing Iot action, execute the caller's context.succeed function to complete
+        }
+    });
+
+
+
+}
+

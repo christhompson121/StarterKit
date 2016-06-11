@@ -1,0 +1,85 @@
+{
+  "n1": {
+    "id":1,
+    "prompt": "NFL",
+    "url": "www.nfl.com/",
+    "say": "national football league",
+    "label": "The NFL",
+
+    "n2": {
+      "id":2,
+      "prompt": "AFC",
+      "url": "www.nfl.com/afc",
+      "say": "american football conference",
+      "label": "The AFC",
+
+      "n4" : {
+        "id":4,
+        "prompt": "East",
+        "url": "www.nfl.com/afceast",
+        "say": "east",
+        "label": "The AFC East",
+
+        "n6" : {
+          "id":6,
+          "prompt": "Patriots",
+          "url": "www.nfl.com/patriots",
+          "say": "patriots",
+          "label": "The Patriots",
+
+          "n8" : {
+            "id":8,
+            "prompt": "Offense",
+            "url": "www.nfl.com/patriots/offense",
+            "say": "offense",
+            "label": "The Patriots Offense"
+          },
+          "n9" : {
+            "id":9,
+            "prompt": "Defence",
+            "url": "www.nfl.com/patriots/defence",
+            "say": "defence",
+            "label": "The Patriots Defence"
+          }
+        },
+        "n7" : {
+          "id":7,
+          "prompt": "Dolphins",
+          "url": "www.nfl.com/dolphins",
+          "say": "dolphins",
+          "label": "The Dolphins",
+          "n10" : {
+            "id":10,
+            "prompt": "Offense",
+            "url": "www.nfl.com/dolphins/offense",
+            "say": "offense",
+            "label": "The Dolphins Offense"
+          },
+          "n11" : {
+            "id":11,
+            "prompt": "Defence",
+            "url": "www.nfl.com/dolphins/defence",
+            "say": "defence",
+            "label": "The Dolphins Defence"
+          }
+        }
+
+      },
+      "n5" : {
+        "id":5,
+        "prompt": "South",
+        "url": "www.nfl.com/afcsouth",
+        "say": "south",
+        "label": "The AFC South"
+      }
+    },
+
+    "n3": {
+      "id":3,
+      "prompt": "NFC",
+      "url": "www.nfl.com/nfc",
+      "say": "national football conference",
+      "label": "The NFC"
+    }
+  }
+}

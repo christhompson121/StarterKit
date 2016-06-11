@@ -1,0 +1,17 @@
+QuantityOnHandIntent how many {Item}
+QuantityOnHandIntent tell me about {Item}
+QuantityOnHandIntent how many {Item}
+QuantityOnHandIntent how many {Item} are there
+QuantityOnHandIntent how many {Item} do we have
+QuantityOnHandIntent how many {Item} are in stock
+QuantityOnHandIntent how many {Item} exist
+QuantityOnHandIntent how many {Item} are on hand
+QuantityOnHandIntent do we have {Item}
+QuantityOnHandIntent are there {Item}
+QuantityOnHandIntent {Item}
+
+EndIntent thanks
+EndIntent thank you
+EndIntent great
+EndIntent goodbye
+

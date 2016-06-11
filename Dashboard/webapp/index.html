@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SQS Long Polling</title>
+
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.18.min.js"></script>
+
+    <script>
+    // http://localhost:63342/StarterKit/BrownBear/webapp/index.html
+
+        var cognitoIdentityPoolID = "us-east-1:e19c31b7-b092-42b4-8d77-2b7939115700";
+
+        var creds = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: cognitoIdentityPoolID
+        });
+        AWS.config.credentials = creds;
+
+        // var AWS = require("aws-sdk");
+        // AWS.config.update({accessKeyId: 'AKIAIMB42B3AXBQIPBNA', secretAccessKey: 'pPK/VjhH1PVQhW8mv0WxSHv9d/oiMnMIgzzzz', });
+        AWS.config.region = 'us-east-1';
+
+        var qurl = "https://sqs.us-east-1.amazonaws.com/333304289684/AlexaQueue";
+        var childWindow;
+
+
+        function WatchQ(qurl) {
+            var queue = new AWS.SQS({params: {QueueUrl: qurl.toString() }}); // using url to queue
+            console.log('Queue poll loop watching ' + qurl);
+
+            var mymsg = queue.receiveMessage({
+                WaitTimeSeconds: 20
+            }, function (err, data) {
+
+                if (data) {
+                    if (typeof data.Messages[0] != "undefined") {
+
+                        console.log("got queue message : " + data.Messages[0].Body);
+
+                        document.getElementById("msgbody").innerHTML = data.Messages[0].Body;
+
+                        pop(data.Messages[0].Body);
+
+
+                        var params = {
+                            QueueUrl: qurl.toString(), /* required */
+                            ReceiptHandle: data.Messages[0].ReceiptHandle /* required */
+                        };
+                        queue.deleteMessage(params, function (err, data) {
+                            if (err) console.log(err, err.stack); // an error occurred
+//                            else {
+//                                console.log("deleted message ");
+//                            }
+                        });
+
+
+                    }
+                } else {
+                    console.log("queue empty");
+                }
+
+                WatchQ(qurl);
+
+                // Call self again for next poll!
+
+            });
+        }
+
+
+        function pop(url) {
+            if (childWindow) {
+                childWindow.location = url;
+            } else {
+                console.log('----- Opening')
+
+                childWindow = window.open(
+                        url,
+                        'mychild',
+                        'height=500,width=700,titlebar=yes,toolbar=no,menubar=no,directories=no,status=no,location=yes,title=new'
+                );
+            }
+
+        }
+    </script>
+</head>
+<body onLoad="WatchQ(qurl);">
+
+Poll Results:
+<div style="background-color: gainsboro" id="msgbody">
+&nbsp;
+</div>
+</body>
+</html>

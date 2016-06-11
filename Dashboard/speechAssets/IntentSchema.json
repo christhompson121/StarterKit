@@ -1,0 +1,18 @@
+
+{
+  "intents": [
+    {
+      "intent": "QuantityOnHandIntent",
+      "slots":[
+        {
+          "name":"Item",
+          "type":"LIST_OF_ITEMS"
+        }
+      ]
+    },
+    {
+      "intent": "EndIntent"
+    }
+
+  ]
+}

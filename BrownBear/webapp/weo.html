@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Single Page App with SQS Long Polling</title>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.18.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <meta name=“viewport” content=“width=device-width, initial-scale=1.0”>
+
+
+</head>
+
+<body onLoad="startup('weo');" id="bootstrap-overrides">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+
+            <a class="navbar-brand" href="#" style="color:orange;font-size: 14pt">&lt weo /&gt</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://aws.amazon.com/sdk-for-browser">AWS SDK for JS</a></li>
+                    <li><a href="https://console.aws.amazon.com/sqs">SQS</a></li>
+                    <li><a href="https://console.aws.amazon.com/iam">IAM</a></li>
+                    <li><a href="https://console.aws.amazon.com/lambda">Lambda</a></li>
+
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="https://developer.amazon.com/edw/home.html#/skills/list">Skills List</a></li>
+                    <li><a href="#" >Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+    <div class="container-fluid">
+        <h3>say "Alexa, Ask Leah to start test"</h3>
+        <div class="row">
+            <div id="appmenu" class="col-sm-3">
+                <div class="panel panel-default ">
+                    <div class="panel-heading ">SQS Queue: WordTest
+                        <br/>
+                        Status :
+                        <span class="active" id="st">POLLING</span>
+                        <br/>
+                        <a href="#" onclick="stoppoll();" > STOP </a>...
+                        <a href="#" onclick="location.reload();" > RESTART</a>
+                    </div>
+                    <div class="panel-info ">
+                        <table class="table-hover" id="te" width="100%"> </table>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-default ">
+                    <div class="panel-heading "><i>Log&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onClick="clearLog();">clear log</a></i></div>
+
+                    <div class="panel-info ">
+                        <table class="table-hover" id="log" width="100%"> </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-5">
+
+
+                <div class="well" id="alert">
+
+                </div>
+
+                <div class="panel panel-default ">
+                    <table id="testbody"  style="align:center">
+
+                    </table>
+
+                </div>
+
+            </div>
+            <div  class="col-sm-2" >
+                <div id="statsbig" class="statsbig"></div>
+                <div id="statssmall" class="statssmall"></div>
+
+                <div id="map" class="map"></div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</body>
+</html>
+

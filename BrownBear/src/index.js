@@ -1,7 +1,7 @@
 // Brown Bear Alexa sample skill
 // see https://amzn.com/0805047905
 
-var AWS = require('aws-sdk');
+// var AWS = require('aws-sdk');
 
 exports.handler = function( event, context ) {
     var say = "";
@@ -24,14 +24,14 @@ exports.handler = function( event, context ) {
 
             if(event.request.intent.slots.Color.value && event.request.intent.slots.Animal.value) {
 
-               myColor  = event.request.intent.slots.Color.value;
-               myAnimal = event.request.intent.slots.Animal.value;
+                myColor  = event.request.intent.slots.Color.value;
+                myAnimal = event.request.intent.slots.Animal.value;
 
-               if (!sessionAttributes.myList)  {sessionAttributes.myList = []; }
+                if (!sessionAttributes.myList)  {sessionAttributes.myList = []; }
 
-               sessionAttributes.myList.push(myColor + " " + myAnimal);
+                sessionAttributes.myList.push(myColor + " " + myAnimal);
 
-               say = myColor + " " + myAnimal + ", " + myColor + " " + myAnimal +  ", what do you see? ";
+                say = myColor + " " + myAnimal + ", " + myColor + " " + myAnimal +  ", what do you see? ";
 
             } else {
                 say = "you can say things like, I see a red bird looking at me";
@@ -127,9 +127,9 @@ function RespondUpdateIotShadow(iot_config, callback) {
 
     //Set the pump to 1 for activation on the device
     var payloadObj={ "state":
-        { "desired":
-            iot_config.IOT_DESIRED_STATE // {"pump":1}
-        }
+    { "desired":
+    iot_config.IOT_DESIRED_STATE // {"pump":1}
+    }
     };
 
     //Prepare the parameters of the update call
@@ -153,4 +153,3 @@ function RespondUpdateIotShadow(iot_config, callback) {
 
 
 }
-
